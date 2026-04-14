@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Campo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+        }
+        .card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        select, input, textarea {
+            transition: all 0.2s;
+        }
+        select:focus, input:focus, textarea:focus {
+            transform: scale(1.01);
+        }
+        .btn-action {
+            box-shadow: 0 4px 0 #0066aa;
+        }
+        .btn-action:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #0066aa;
+        }
+        /* Calculadora */
+        .calc-btn {
+            font-size: 18px;
+            font-weight: bold;
+            background: #f0f0f0;
+            border-radius: 8px;
+            transition: background 0.1s;
+        }
+        .calc-btn:active { background: #ccc; }
+        .calc-equal { background: #2563eb !important; color: white; }
+    </style>
+</head>
+<body class="min-h-screen p-4">
+
+    <div class="max-w-md mx-auto">
+        <h1 class="text-3xl font-bold text-center text-blue-700 mb-2">📋 Formulário de Campo</h1>
+        <p class="text-center text-gray-500 mb-6">Preenchimento rápido e fácil</p>
+
+        <div class="card p-5">
+            <!-- Saudação -->
+            <div class="mb-4">
+                <label class="block text-gray-700 font-semibold mb-2">Saudação:</label>
+                <div class="flex gap-3">
+                    <button onclick="setSaudacao('Bom dia!')" class="saudacao-btn flex-1 bg-blue-100 hover:bg-blue-200 text-blue-800 py-2 rounded-lg font-bold transition">Bom dia!</button>
+                    <button onclick="setSaudacao('Boa tarde!')" class="saudacao-btn flex-1 bg-blue-100 hover:bg-blue-200 text-blue-800 py-2 rounded-lg font-bold transition">Boa tarde!</button>
+                </div>
+            </div>
+
+            <!-- Data Automática -->
+            <div class="mb-4">
+                <label class="block text-gray-700 font-semibold mb-2">📅 Data:</label>
+                <input type="text" id="data" class="w-full p-3 border-2 border-gray-200 rounded-lg bg-gray-50" readonly>
+            </div>
+
+            <!-- Piloto -->
+            <div class="mb-4">
+                <label class="block text-gray-700 font-semibold mb-2">👨‍✈️ Piloto:</label>
+                <select id="piloto" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500">
+                    <option value="">Selecione...</option>
+                    <option>Marcelo</option>
+                    <option>Toni</option>
+                    <option>Vinicius</option>
+                </select>
+            </div>
+
+            <!-- Pista (Ordem Alfabética) -->
+            <div class="mb-4">
+                <label class="block text-gray-700 font-semibold mb-2">🛣️ Pista:</label>
+                <select id="pista" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500">
+                    <option value="">Selecione...</option>
+                    <option>Boa Esperança 8</option>
+                    <option>Coroados</option>
+                    <option>Hangar</option>
+                    <option>Maravilha</option>
+                    <option>Nova Marilia</option>
+                    <option>Pema</option>
+                    <option>São José</option>
+                    <option>São Lucas</option>
+                    <option>Stella Maris</option>
+                    <option>Troncon</option>
+                    <option>Usina Dracena</option>
+                    <option>Zenan</option>
+                </select>
+            </div>
+
+            <!-- Gestor -->
+            <div class="mb-4">
+                <label class="block text-gray-700 font-semibold mb-2">👔 Gestor Responsável:</label>
+                <select id="gestor" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500">
+                    <option value="">Selecione...</option>
+                    <option>Geovane</option>
+                    <option>Julio</option>
+                    <option>Nivaldo</option>
+                </select>
+            </div>
+
+            <!-- Motorista SEPARADOS -->
+            <div class="mb-4">
+                <label class="block text-gray-700 font-semibold mb-2">🚛 Motorista:</label>
+                <select id="motorista" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500">
+                    <option value="">Selecione...</option>
+                    <option>Carlos</option>
+                    <option>Everson</option>
+                    <option>Nivaldo</option>
+                    <option>Regis</option>
+                </select>
+            </div>
+
+            <!-- Produto (Multipla escolha + Manual) -->
+            <div class="mb-4">
+                <label class="block text-gray-700 font-semibold mb-2">🧪 Produto(s):</label>
+                <div class="grid grid-cols-2 gap-2 mb-2">
+                    <label class="flex items-center gap-2 bg-gray-50 p-2 rounded cursor-pointer"><input type="checkbox" value="Ampligo" class="produto-chk"> Ampligo</label>
+                    <label class="flex items-center gap-2 bg-gray-50 p-2 rounded cursor-pointer"><input type="checkbox" value="Boro" class="produto-chk"> Boro</label>
+                    <label class="flex items-center gap-2 bg-gray-50 p-2 rounded cursor-pointer"><input type="checkbox" value="Curavial" class="produto-chk"> Curavial</label>
+                    <label class="flex items-center gap-2 bg-gray-50 p-2 rounded cursor-pointer"><input type="checkbox" value="Defender" class="produto-chk"> Defender</label>
+                    <label class="flex items-center gap-2 bg-gray-50 p-2 rounded cursor-pointer"><input type="checkbox" value="Etrel" class="produto-chk"> Etrel</label>
+                    <label class="flex items-center gap-2 bg-gray-50 p-2 rounded cursor-pointer"><input type="checkbox" value="Modus" class="produto-chk"> Modus</label>
+                    <label class="flex items-center gap-2 bg-gray-50 p-2 rounded cursor-pointer"><input type="checkbox" value="Revolux" class="produto-chk"> Revolux</label>
+                    <label class="flex items-center gap-2 bg-gray-50 p-2 rounded cursor-pointer"><input type="checkbox" value="Riper" class="produto-chk"> Riper</label>
+                    <label class="flex items-center gap-2 bg-gray-50 p-2 rounded cursor-pointer"><input type="checkbox" value="Tecplus" class="produto-chk"> Tecplus</label>
+                </div>
+                <input type="text" id="produtoManual" placeholder="Ou digite manualmente..." class="w-full p-3 border-2 border-gray-200 rounded-lg">
+            </div>
+
+            <!-- Quantidade COM CALCULADORA ATUALIZADA -->
+            <div class="mb-4">
+                <label class="block text-gray-700 font-semibold mb-2">📏 Quantidade de Ha aplicado:</label>
+                <input type="text" id="hectares" placeholder="Ex: 25,5 Ha" class="w-full p-3 border-2 border-gray-200 rounded-lg mb-2">
+                
+                <!-- Mini Calculadora com Sinal de + -->
+                <div class="grid grid-cols-4 gap-2 bg-gray-100 p-3 rounded-xl">
+                    <button class="calc-btn p-3" onclick="addToCalc('7')">7</button>
+                    <button class="calc-btn p-3" onclick="addToCalc('8')">8</button>
+                    <button class="calc-btn p-3" onclick="addToCalc('9')">9</button>
+                    <button class="calc-btn p-3 text-red-600" onclick="limparCalc()">C</button>
+
+                    <button class="calc-btn p-3" onclick="addToCalc('4')">4</button>
+                    <button class="calc-btn p-3" onclick="addToCalc('5')">5</button>
+                    <button class="calc-btn p-3" onclick="addToCalc('6')">6</button>
+                    <button class="calc-btn p-3" onclick="addToCalc('+')">+</button>
+
+                    <button class="calc-btn p-3" onclick="addToCalc('1')">1</button>
+                    <button class="calc-btn p-3" onclick="addToCalc('2')">2</button>
+                    <button class="calc-btn p-3" onclick="addToCalc('3')">3</button>
+                    <button class="calc-btn p-3" onclick="addToCalc('-')">-</button>
+
+                    <button class="calc-btn p-3" onclick="addToCalc('0')">0</button>
+                    <button class="calc-btn p-3" onclick="addToCalc(',')">,</button>
+                    <button class="calc-btn p-3" onclick="addToCalc('.')">.</button>
+                    <button class="calc-btn calc-equal p-3" onclick="calcular()">=</button>
+                </div>
+            </div>
+
+            <!-- Status da Área -->
+            <div class="mb-6">
+                <label class="block text-gray-700 font-semibold mb-2">✅ Situação:</label>
+                <div class="flex gap-3">
+                    <button onclick="setStatus(this, 'Áreas finalizadas')" class="status-btn flex-1 bg-green-100 hover:bg-green-200 text-green-800 py-3 rounded-lg font-bold transition">Áreas finalizadas</button>
+                    <button onclick="setStatus(this, 'Áreas não finalizadas')" class="status-btn flex-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 py-3 rounded-lg font-bold transition">Áreas não finalizadas</button>
+                </div>
+            </div>
+
+            <!-- Botões de Ação -->
+            <div class="flex gap-4">
+                <button onclick="copiarTexto()" class="btn-action flex-1 bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2">
+                    <i class="fas fa-copy"></i> COPIAR
+                </button>
+                <button onclick="salvarTexto()" class="btn-action flex-1 bg-green-600 hover:bg-green-700 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2">
+                    <i class="fas fa-save"></i> SALVAR
+                </button>
+            </div>
+
+            <div id="mensagem" class="text-center mt-4 text-green-600 font-bold hidden"></div>
+        </div>
+    </div>
+
+    <script>
+        // Colocar data atual automaticamente
+        const hoje = new Date();
+        const dataFormatada = hoje.toLocaleDateString('pt-BR');
+        document.getElementById('data').value = dataFormatada;
+
+        let saudacaoSelecionada = "";
+        let statusSelecionado = "";
+        let tempCalc = "";
+
+        function setSaudacao(texto) {
+            saudacaoSelecionada = texto;
+            document.querySelectorAll('.saudacao-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-500', 'text-white');
+                btn.classList.add('bg-blue-100');
+            });
+            event.target.classList.remove('bg-blue-100');
+            event.target.classList.add('bg-blue-500', 'text-white');
+        }
+
+        function setStatus(elemento, texto) {
+            statusSelecionado = texto;
+            document.querySelectorAll('.status-btn').forEach(btn => {
+                btn.classList.remove('ring-4', 'ring-opacity-50');
+            });
+            elemento.classList.add('ring-4', 'ring-opacity-50');
+        }
+
+        // Funções da Calculadora
+        function addToCalc(valor) {
+            tempCalc += valor;
+            document.getElementById('hectares').value = tempCalc;
+        }
+        function limparCalc() {
+            tempCalc = "";
+            document.getElementById('hectares').value = "";
+        }
+        function calcular() {
+            try {
+                // Troca virgula por ponto para calcular
+                let conta = tempCalc.replace(',', '.');
+                const resultado = eval(conta);
+                document.getElementById('hectares').value = resultado;
+                tempCalc = resultado.toString();
+            } catch (e) {
+                document.getElementById('hectares').value = "Erro";
+                tempCalc = "";
+            }
+        }
+
+        function montarTexto() {
+            // Pegar produtos selecionados
+            let produtos = [];
+            document.querySelectorAll('.produto-chk:checked').forEach(cb => {
+                produtos.push(cb.value);
+            });
+            const manual = document.getElementById('produtoManual').value;
+            if(manual) produtos.push(manual);
+            const produtosTexto = produtos.length > 0 ? produtos.join(', ') : 'Não informado';
+
+            return `
+${saudacaoSelecionada || ""}
+📅 Data: ${document.getElementById('data').value}
+👨‍✈️ Piloto: ${document.getElementById('piloto').value || "-"}
+🛣️ Pista: ${document.getElementById('pista').value || "-"}
+👔 Gestor: ${document.getElementById('gestor').value || "-"}
+🚛 Motorista: ${document.getElementById('motorista').value || "-"}
+🧪 Produto: ${produtosTexto}
+📏 Ha aplicado: ${document.getElementById('hectares').value || "-"}
+✅ Situação: ${statusSelecionado}
+            `.trim();
+        }
+
+        function copiarTexto() {
+            const texto = montarTexto();
+            navigator.clipboard.writeText(texto).then(() => {
+                mostrarMensagem("✅ Texto copiado para a área de transferência!");
+            });
+        }
+
+        function salvarTexto() {
+            const texto = montarTexto();
+            const blob = new Blob([texto], {type: 'text/plain'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `relatorio-${document.getElementById('data').value.replace(/\//g, '-')}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            mostrarMensagem("💾 Arquivo salvo com sucesso!");
+        }
+
+        function mostrarMensagem(texto) {
+            const msg = document.getElementById('mensagem');
+            msg.textContent = texto;
+            msg.classList.remove('hidden');
+            setTimeout(() => msg.classList.add('hidden'), 3000);
+        }
+    </script>
+</body>
+</html>
