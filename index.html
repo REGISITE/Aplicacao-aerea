@@ -1,291 +1,877 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulário de Campo</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body {
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
-        }
-        .card {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        }
-        select, input, textarea {
-            transition: all 0.2s;
-        }
-        select:focus, input:focus, textarea:focus {
-            transform: scale(1.01);
-        }
-        .btn-action {
-            box-shadow: 0 4px 0 #0066aa;
-        }
-        .btn-action:active {
-            transform: translateY(3px);
-            box-shadow: 0 1px 0 #0066aa;
-        }
-        /* Calculadora */
-        .calc-btn {
-            font-size: 18px;
-            font-weight: bold;
-            background: #f0f0f0;
-            border-radius: 8px;
-            transition: background 0.1s;
-        }
-        .calc-btn:active { background: #ccc; }
-        .calc-equal { background: #2563eb !important; color: white; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Aplicativo de Pista - Preenchimento Rápido</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Segoe UI', 'Roboto', system-ui, sans-serif;
+      background: #0f172a;
+      padding: 12px 8px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      color: #e2e8f0;
+    }
+    .app-container {
+      max-width: 480px;
+      margin: 0 auto;
+      width: 100%;
+      background: #1e293b;
+      border-radius: 28px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      padding: 16px 12px 20px;
+    }
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #f1f5f9;
+    }
+    .btn-reset {
+      background: #450a0a;
+      border: none;
+      color: #fca5a5;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: 0.2s;
+      border: 1px solid #7f1d1d;
+    }
+    .btn-reset:active {
+      background: #7f1d1d;
+    }
+    .greeting-row {
+      background: #312e81;
+      padding: 8px 12px;
+      border-radius: 16px;
+      margin: 10px 0 8px;
+      font-size: 1rem;
+      color: #e0e7ff;
+    }
+    .saudacao-texto {
+      display: block;
+      margin-bottom: 2px;
+    }
+    .data-field {
+      display: block;
+      font-weight: 500;
+      color: #93c5fd;
+    }
+    .card {
+      background: #1e293b;
+      border-radius: 18px;
+      padding: 8px 0;
+      margin-bottom: 8px;
+    }
+    label {
+      font-weight: 600;
+      font-size: 0.85rem;
+      display: block;
+      margin-bottom: 4px;
+      color: #cbd5e1;
+    }
+    select, input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1.5px solid #334155;
+      font-size: 0.9rem;
+      background: #0f172a;
+      color: #e2e8f0;
+      transition: 0.15s;
+      font-family: inherit;
+    }
+    select:focus, input:focus {
+      border-color: #3b82f6;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+    }
+    select option {
+      background: #1e293b;
+      color: #e2e8f0;
+    }
+    
+    /* Produtos em grade de quadradinhos */
+    .produtos-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+      margin: 6px 0;
+    }
+    .produto-checkbox {
+      background: #0f172a;
+      border: 1.5px solid #334155;
+      border-radius: 10px;
+      padding: 8px 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .produto-checkbox.selected {
+      background: #1e3a5f;
+      border-color: #3b82f6;
+    }
+    .produto-checkbox input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #3b82f6;
+      margin: 0;
+      pointer-events: none;
+    }
+    .produto-checkbox span {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #e2e8f0;
+      pointer-events: none;
+    }
+    
+    .manual-input-area {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .manual-input-area input {
+      flex: 1;
+    }
+    .add-manual-btn {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 0 16px;
+      font-weight: bold;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+    .add-manual-btn:active {
+      background: #2563eb;
+    }
+    
+    /* Calculadora - Botão Mostrar/Esconder */
+    .calc-toggle-btn {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      margin: 8px 0;
+      font-size: 0.9rem;
+    }
+    
+    /* Calculadora - Maior quando aberta */
+    .calculadora-card {
+      background: #0f172a;
+      border-radius: 12px;
+      padding: 10px;
+      margin: 8px 0;
+      display: none;
+    }
+    .calculadora-card.show {
+      display: block;
+    }
+    .calc-display {
+      background: #020617;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 1.2rem;
+      text-align: right;
+      margin-bottom: 8px;
+      border: 1.5px solid #334155;
+      font-family: monospace;
+      min-height: 45px;
+      color: #93c5fd;
+      word-wrap: break-word;
+      overflow-x: auto;
+    }
+    .calc-buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+    .calc-btn {
+      background: #1e293b;
+      border: 1.5px solid #334155;
+      border-radius: 10px;
+      padding: 12px 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.15s;
+      color: #e2e8f0;
+    }
+    .calc-btn:active {
+      background: #334155;
+    }
+    .calc-btn.operator {
+      background: #854d0e;
+      border-color: #a16207;
+      color: #fef3c7;
+    }
+    .calc-btn.equals {
+      background: #065f46;
+      border-color: #047857;
+      color: white;
+    }
+    .calc-btn.clear {
+      background: #991b1b;
+      border-color: #7f1d1d;
+      color: white;
+    }
+    
+    .area-input-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 10px 0;
+    }
+    .area-input-group input {
+      flex: 1;
+      padding: 8px 10px;
+      font-size: 0.9rem;
+    }
+    .btn-usar {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      font-size: 0.85rem;
+    }
+    .btn-usar:active {
+      background: #2563eb;
+    }
+    .area-resultado {
+      font-weight: 700;
+      color: #93c5fd;
+      background: #020617;
+      padding: 8px 12px;
+      border-radius: 10px;
+      white-space: nowrap;
+      border: 1.5px solid #334155;
+      font-size: 0.95rem;
+    }
+    
+    .radio-group {
+      display: flex;
+      gap: 20px;
+      margin-top: 6px;
+    }
+    .radio-group label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+      margin-bottom: 0;
+      cursor: pointer;
+      color: #cbd5e1;
+      font-size: 0.85rem;
+    }
+    .radio-group input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #3b82f6;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+      margin: 16px 0 8px;
+    }
+    .btn-copiar, .btn-grupo, .btn-compartilhar {
+      flex: 1;
+      padding: 10px 6px;
+      border-radius: 40px;
+      border: none;
+      font-weight: 700;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      color: white;
+      white-space: nowrap;
+    }
+    .btn-copiar {
+      background: #334155;
+    }
+    .btn-copiar:active {
+      background: #475569;
+    }
+    .btn-grupo {
+      background: linear-gradient(135deg, #25D366, #128C7E);
+    }
+    .btn-compartilhar {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    }
+    
+    textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 14px;
+      border: 1.5px solid #334155;
+      font-size: 0.85rem;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 60px;
+      background: #0f172a;
+      color: #e2e8f0;
+    }
+    textarea:focus {
+      border-color: #3b82f6;
+      outline: none;
+    }
+    
+    .small-note {
+      font-size: 0.65rem;
+      color: #64748b;
+      margin-top: 4px;
+      text-align: center;
+    }
+    
+    .icone {
+      font-size: 14px;
+    }
+  </style>
 </head>
-<body class="min-h-screen p-4">
+<body>
+<div class="app-container">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <h2>📋 Preenchimento</h2>
+    <button class="btn-reset" id="resetButton">⟲ Reset</button>
+  </div>
 
-    <div class="max-w-md mx-auto">
-        <h1 class="text-3xl font-bold text-center text-blue-700 mb-2">📋 Formulário de Campo</h1>
-        <p class="text-center text-gray-500 mb-6">Preenchimento rápido e fácil</p>
+  <!-- Saudação automática + data -->
+  <div class="greeting-row">
+    <span class="saudacao-texto" id="saudacaoTexto">Bom dia!</span>
+    <span class="data-field" id="dataAtual"></span>
+  </div>
 
-        <div class="card p-5">
-            <!-- Saudação -->
-            <div class="mb-4">
-                <label class="block text-gray-700 font-semibold mb-2">Saudação:</label>
-                <div class="flex gap-3">
-                    <button onclick="setSaudacao('Bom dia!')" class="saudacao-btn flex-1 bg-blue-100 hover:bg-blue-200 text-blue-800 py-2 rounded-lg font-bold transition">Bom dia!</button>
-                    <button onclick="setSaudacao('Boa tarde!')" class="saudacao-btn flex-1 bg-blue-100 hover:bg-blue-200 text-blue-800 py-2 rounded-lg font-bold transition">Boa tarde!</button>
-                </div>
-            </div>
+  <!-- Pista -->
+  <div class="card">
+    <label>🛣️ Pista</label>
+    <select id="pistaSelect"></select>
+  </div>
 
-            <!-- Data Automática -->
-            <div class="mb-4">
-                <label class="block text-gray-700 font-semibold mb-2">📅 Data:</label>
-                <input type="text" id="data" class="w-full p-3 border-2 border-gray-200 rounded-lg bg-gray-50" readonly>
-            </div>
+  <!-- Piloto -->
+  <div class="card">
+    <label>👨‍✈️ Piloto</label>
+    <select id="pilotoSelect"></select>
+  </div>
 
-            <!-- Piloto -->
-            <div class="mb-4">
-                <label class="block text-gray-700 font-semibold mb-2">👨‍✈️ Piloto:</label>
-                <select id="piloto" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500">
-                    <option value="">Selecione...</option>
-                    <option>Marcelo</option>
-                    <option>Toni</option>
-                    <option>Vinicius</option>
-                </select>
-            </div>
+  <!-- Gestor Responsável -->
+  <div class="card">
+    <label>🧑‍💼 Gestor Responsável</label>
+    <select id="gestorSelect"></select>
+  </div>
 
-            <!-- Pista (Ordem Alfabética) -->
-            <div class="mb-4">
-                <label class="block text-gray-700 font-semibold mb-2">🛣️ Pista:</label>
-                <select id="pista" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500">
-                    <option value="">Selecione...</option>
-                    <option>Boa Esperança 8</option>
-                    <option>Coroados</option>
-                    <option>Hangar</option>
-                    <option>Maravilha</option>
-                    <option>Nova Marilia</option>
-                    <option>Pema</option>
-                    <option>São José</option>
-                    <option>São Lucas</option>
-                    <option>Stella Maris</option>
-                    <option>Troncon</option>
-                    <option>Usina Dracena</option>
-                    <option>Zenan</option>
-                </select>
-            </div>
+  <!-- Motorista -->
+  <div class="card">
+    <label>🚛 Motorista</label>
+    <select id="motoristaSelect"></select>
+  </div>
 
-            <!-- Gestor -->
-            <div class="mb-4">
-                <label class="block text-gray-700 font-semibold mb-2">👔 Gestor Responsável:</label>
-                <select id="gestor" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500">
-                    <option value="">Selecione...</option>
-                    <option>Geovane</option>
-                    <option>Julio</option>
-                    <option>Nivaldo</option>
-                </select>
-            </div>
+  <!-- Seção -->
+  <div class="card">
+    <label>📂 Seção</label>
+    <input type="text" id="secaoInput" placeholder="Digite a seção...">
+  </div>
 
-            <!-- Motorista SEPARADOS -->
-            <div class="mb-4">
-                <label class="block text-gray-700 font-semibold mb-2">🚛 Motorista:</label>
-                <select id="motorista" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500">
-                    <option value="">Selecione...</option>
-                    <option>Carlos</option>
-                    <option>Everson</option>
-                    <option>Nivaldo</option>
-                    <option>Regis</option>
-                </select>
-            </div>
-
-            <!-- Produto (Multipla escolha + Manual) -->
-            <div class="mb-4">
-                <label class="block text-gray-700 font-semibold mb-2">🧪 Produto(s):</label>
-                <div class="grid grid-cols-2 gap-2 mb-2">
-                    <label class="flex items-center gap-2 bg-gray-50 p-2 rounded cursor-pointer"><input type="checkbox" value="Ampligo" class="produto-chk"> Ampligo</label>
-                    <label class="flex items-center gap-2 bg-gray-50 p-2 rounded cursor-pointer"><input type="checkbox" value="Boro" class="produto-chk"> Boro</label>
-                    <label class="flex items-center gap-2 bg-gray-50 p-2 rounded cursor-pointer"><input type="checkbox" value="Curavial" class="produto-chk"> Curavial</label>
-                    <label class="flex items-center gap-2 bg-gray-50 p-2 rounded cursor-pointer"><input type="checkbox" value="Defender" class="produto-chk"> Defender</label>
-                    <label class="flex items-center gap-2 bg-gray-50 p-2 rounded cursor-pointer"><input type="checkbox" value="Etrel" class="produto-chk"> Etrel</label>
-                    <label class="flex items-center gap-2 bg-gray-50 p-2 rounded cursor-pointer"><input type="checkbox" value="Modus" class="produto-chk"> Modus</label>
-                    <label class="flex items-center gap-2 bg-gray-50 p-2 rounded cursor-pointer"><input type="checkbox" value="Revolux" class="produto-chk"> Revolux</label>
-                    <label class="flex items-center gap-2 bg-gray-50 p-2 rounded cursor-pointer"><input type="checkbox" value="Riper" class="produto-chk"> Riper</label>
-                    <label class="flex items-center gap-2 bg-gray-50 p-2 rounded cursor-pointer"><input type="checkbox" value="Tecplus" class="produto-chk"> Tecplus</label>
-                </div>
-                <input type="text" id="produtoManual" placeholder="Ou digite manualmente..." class="w-full p-3 border-2 border-gray-200 rounded-lg">
-            </div>
-
-            <!-- Quantidade COM CALCULADORA ATUALIZADA -->
-            <div class="mb-4">
-                <label class="block text-gray-700 font-semibold mb-2">📏 Quantidade de Ha aplicado:</label>
-                <input type="text" id="hectares" placeholder="Ex: 25,5 Ha" class="w-full p-3 border-2 border-gray-200 rounded-lg mb-2">
-                
-                <!-- Mini Calculadora com Sinal de + -->
-                <div class="grid grid-cols-4 gap-2 bg-gray-100 p-3 rounded-xl">
-                    <button class="calc-btn p-3" onclick="addToCalc('7')">7</button>
-                    <button class="calc-btn p-3" onclick="addToCalc('8')">8</button>
-                    <button class="calc-btn p-3" onclick="addToCalc('9')">9</button>
-                    <button class="calc-btn p-3 text-red-600" onclick="limparCalc()">C</button>
-
-                    <button class="calc-btn p-3" onclick="addToCalc('4')">4</button>
-                    <button class="calc-btn p-3" onclick="addToCalc('5')">5</button>
-                    <button class="calc-btn p-3" onclick="addToCalc('6')">6</button>
-                    <button class="calc-btn p-3" onclick="addToCalc('+')">+</button>
-
-                    <button class="calc-btn p-3" onclick="addToCalc('1')">1</button>
-                    <button class="calc-btn p-3" onclick="addToCalc('2')">2</button>
-                    <button class="calc-btn p-3" onclick="addToCalc('3')">3</button>
-                    <button class="calc-btn p-3" onclick="addToCalc('-')">-</button>
-
-                    <button class="calc-btn p-3" onclick="addToCalc('0')">0</button>
-                    <button class="calc-btn p-3" onclick="addToCalc(',')">,</button>
-                    <button class="calc-btn p-3" onclick="addToCalc('.')">.</button>
-                    <button class="calc-btn calc-equal p-3" onclick="calcular()">=</button>
-                </div>
-            </div>
-
-            <!-- Status da Área -->
-            <div class="mb-6">
-                <label class="block text-gray-700 font-semibold mb-2">✅ Situação:</label>
-                <div class="flex gap-3">
-                    <button onclick="setStatus(this, 'Áreas finalizadas')" class="status-btn flex-1 bg-green-100 hover:bg-green-200 text-green-800 py-3 rounded-lg font-bold transition">Áreas finalizadas</button>
-                    <button onclick="setStatus(this, 'Áreas não finalizadas')" class="status-btn flex-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 py-3 rounded-lg font-bold transition">Áreas não finalizadas</button>
-                </div>
-            </div>
-
-            <!-- Botões de Ação -->
-            <div class="flex gap-4">
-                <button onclick="copiarTexto()" class="btn-action flex-1 bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2">
-                    <i class="fas fa-copy"></i> COPIAR
-                </button>
-                <button onclick="salvarTexto()" class="btn-action flex-1 bg-green-600 hover:bg-green-700 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2">
-                    <i class="fas fa-save"></i> SALVAR
-                </button>
-            </div>
-
-            <div id="mensagem" class="text-center mt-4 text-green-600 font-bold hidden"></div>
-        </div>
+  <!-- Produto com quadradinhos - SEM TAGS -->
+  <div class="card">
+    <label>🧪 Produto</label>
+    <div class="produtos-grid" id="produtosGrid"></div>
+    <div class="manual-input-area">
+      <input type="text" id="manualProdutoInput" placeholder="Digite outro produto...">
+      <button class="add-manual-btn" id="addManualProdutoBtn">+</button>
     </div>
+  </div>
 
-    <script>
-        // Colocar data atual automaticamente
-        const hoje = new Date();
-        const dataFormatada = hoje.toLocaleDateString('pt-BR');
-        document.getElementById('data').value = dataFormatada;
+  <!-- Calculadora com botão mostrar/esconder -->
+  <div class="card">
+    <label>📏 QTD DE ÁREA APLICADA</label>
+    <div class="area-input-group">
+      <input type="number" id="areaInput" placeholder="Digite o valor" step="any" value="0">
+      <button class="btn-usar" id="usarResultadoBtn">Usar</button>
+    </div>
+    <div class="area-resultado" id="areaResultado">0.00 ha</div>
+    
+    <button class="calc-toggle-btn" id="calcToggleBtn">
+      <span id="calcToggleText">🧮 Mostrar Calculadora</span>
+    </button>
+    
+    <div class="calculadora-card" id="calculadoraCard">
+      <div class="calc-display" id="calcDisplay">0</div>
+      <div class="calc-buttons" id="calcButtons"></div>
+    </div>
+  </div>
 
-        let saudacaoSelecionada = "";
-        let statusSelecionado = "";
-        let tempCalc = "";
+  <!-- Status da área -->
+  <div class="card">
+    <label>✅ Status da área</label>
+    <div class="radio-group">
+      <label><input type="radio" name="statusArea" value="finalizada"> Finalizada</label>
+      <label><input type="radio" name="statusArea" value="naoFinalizada"> Não finalizada</label>
+    </div>
+  </div>
 
-        function setSaudacao(texto) {
-            saudacaoSelecionada = texto;
-            document.querySelectorAll('.saudacao-btn').forEach(btn => {
-                btn.classList.remove('bg-blue-500', 'text-white');
-                btn.classList.add('bg-blue-100');
-            });
-            event.target.classList.remove('bg-blue-100');
-            event.target.classList.add('bg-blue-500', 'text-white');
+  <!-- Observações -->
+  <div class="card">
+    <label>📝 Obs</label>
+    <textarea id="obsText" placeholder="Digite observações..."></textarea>
+  </div>
+
+  <!-- Botões de ação -->
+  <div class="action-buttons">
+    <button class="btn-copiar" id="copiarBtn">
+      <span class="icone">📋</span> Copiar
+    </button>
+    <button class="btn-grupo" id="btnGrupoNormal">
+      <span class="icone">👥</span> Grupo
+    </button>
+    <button class="btn-compartilhar" id="btnCompartilhar">
+      <span class="icone">📤</span> Comp.
+    </button>
+  </div>
+  <div class="small-note">Copiar • Grupo WhatsApp • Compartilhar</div>
+</div>
+
+<script>
+  (function() {
+    "use strict";
+
+    // ---------- DADOS ORDENADOS ----------
+    const pistas = ["Boa Esperança 8", "Coroados", "Hangar", "Maravilha", "Nova Marília", "Pema", "São José", "São Lucas", "Stella Maris", "Troncon", "Usina Dracena", "Zenan"].sort();
+    const pilotos = ["Itaja", "Marcelo", "Toni", "Vinicius"];
+    const gestores = ["Geovane", "João", "Julio"];
+    const motoristas = ["Carlos Miguel", "Everson", "Nivaldo", "Régis"].sort();
+    const produtosBase = ["Revolux", "Ampligo", "Tecplus", "Defender", "Boro", "Etrel", "Curavial", "Modus", "Uran", "Bvi", "Metarriz", "Pravda"];
+
+    // Estado do app
+    let produtosSelecionados = [];
+    
+    // Estado da calculadora
+    let displayValue = '0';
+    let firstOperand = null;
+    let operator = null;
+    let waitingForSecondOperand = false;
+
+    // Link do grupo WhatsApp
+    const linkGrupoNormal = "https://chat.whatsapp.com/DuRfwVlzKC97ig3FvFJxLV";
+
+    // DOM elements
+    const saudacaoEl = document.getElementById('saudacaoTexto');
+    const dataEl = document.getElementById('dataAtual');
+    const pistaSelect = document.getElementById('pistaSelect');
+    const pilotoSelect = document.getElementById('pilotoSelect');
+    const gestorSelect = document.getElementById('gestorSelect');
+    const motoristaSelect = document.getElementById('motoristaSelect');
+    const secaoInput = document.getElementById('secaoInput');
+    const produtosGrid = document.getElementById('produtosGrid');
+    const manualInput = document.getElementById('manualProdutoInput');
+    const addManualBtn = document.getElementById('addManualProdutoBtn');
+    const areaInput = document.getElementById('areaInput');
+    const areaResultado = document.getElementById('areaResultado');
+    const calcDisplay = document.getElementById('calcDisplay');
+    const calcButtons = document.getElementById('calcButtons');
+    const usarResultadoBtn = document.getElementById('usarResultadoBtn');
+    const obsText = document.getElementById('obsText');
+    const resetBtn = document.getElementById('resetButton');
+    const copiarBtn = document.getElementById('copiarBtn');
+    const btnGrupoNormal = document.getElementById('btnGrupoNormal');
+    const btnCompartilhar = document.getElementById('btnCompartilhar');
+    const calcToggleBtn = document.getElementById('calcToggleBtn');
+    const calcToggleText = document.getElementById('calcToggleText');
+    const calculadoraCard = document.getElementById('calculadoraCard');
+
+    // ---------- FUNÇÕES AUXILIARES ----------
+    function atualizarSaudacaoEData() {
+      const agora = new Date();
+      const hora = agora.getHours();
+      let saudacao = hora < 12 ? 'Bom dia!' : (hora < 18 ? 'Boa tarde!' : 'Boa noite!');
+      saudacaoEl.textContent = saudacao;
+      
+      const dia = String(agora.getDate()).padStart(2,'0');
+      const mes = String(agora.getMonth()+1).padStart(2,'0');
+      const ano = agora.getFullYear();
+      dataEl.textContent = `Data: ${dia}/${mes}/${ano}`;
+    }
+    atualizarSaudacaoEData();
+    setInterval(atualizarSaudacaoEData, 60000);
+
+    // Preencher selects
+    function popularSelect(selectEl, lista) {
+      selectEl.innerHTML = '';
+      const opt = document.createElement('option');
+      opt.value = '';
+      opt.textContent = '-- Selecione --';
+      opt.disabled = true;
+      opt.selected = true;
+      selectEl.appendChild(opt);
+      
+      lista.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item;
+        opt.textContent = item;
+        selectEl.appendChild(opt);
+      });
+    }
+
+    popularSelect(pistaSelect, pistas);
+    popularSelect(pilotoSelect, pilotos);
+    popularSelect(gestorSelect, gestores);
+    popularSelect(motoristaSelect, motoristas);
+
+    // Produtos em grade de quadradinhos - SEM TAGS
+    function renderizarProdutosGrid() {
+      produtosGrid.innerHTML = '';
+      produtosBase.forEach(prod => {
+        const div = document.createElement('div');
+        div.className = 'produto-checkbox';
+        if (produtosSelecionados.includes(prod)) {
+          div.classList.add('selected');
         }
-
-        function setStatus(elemento, texto) {
-            statusSelecionado = texto;
-            document.querySelectorAll('.status-btn').forEach(btn => {
-                btn.classList.remove('ring-4', 'ring-opacity-50');
-            });
-            elemento.classList.add('ring-4', 'ring-opacity-50');
-        }
-
-        // Funções da Calculadora
-        function addToCalc(valor) {
-            tempCalc += valor;
-            document.getElementById('hectares').value = tempCalc;
-        }
-        function limparCalc() {
-            tempCalc = "";
-            document.getElementById('hectares').value = "";
-        }
-        function calcular() {
-            try {
-                // Troca virgula por ponto para calcular
-                let conta = tempCalc.replace(',', '.');
-                const resultado = eval(conta);
-                document.getElementById('hectares').value = resultado;
-                tempCalc = resultado.toString();
-            } catch (e) {
-                document.getElementById('hectares').value = "Erro";
-                tempCalc = "";
+        
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.value = prod;
+        checkbox.checked = produtosSelecionados.includes(prod);
+        
+        const span = document.createElement('span');
+        span.textContent = prod;
+        
+        div.appendChild(checkbox);
+        div.appendChild(span);
+        
+        div.addEventListener('click', (e) => {
+          const chk = div.querySelector('input');
+          chk.checked = !chk.checked;
+          
+          if (chk.checked) {
+            if (!produtosSelecionados.includes(prod)) {
+              produtosSelecionados.push(prod);
             }
-        }
+            div.classList.add('selected');
+          } else {
+            produtosSelecionados = produtosSelecionados.filter(p => p !== prod);
+            div.classList.remove('selected');
+          }
+          // Não mostra tags
+        });
+        
+        produtosGrid.appendChild(div);
+      });
+    }
 
-        function montarTexto() {
-            // Pegar produtos selecionados
-            let produtos = [];
-            document.querySelectorAll('.produto-chk:checked').forEach(cb => {
-                produtos.push(cb.value);
-            });
-            const manual = document.getElementById('produtoManual').value;
-            if(manual) produtos.push(manual);
-            const produtosTexto = produtos.length > 0 ? produtos.join(', ') : 'Não informado';
-
-            return `
-${saudacaoSelecionada || ""}
-📅 Data: ${document.getElementById('data').value}
-👨‍✈️ Piloto: ${document.getElementById('piloto').value || "-"}
-🛣️ Pista: ${document.getElementById('pista').value || "-"}
-👔 Gestor: ${document.getElementById('gestor').value || "-"}
-🚛 Motorista: ${document.getElementById('motorista').value || "-"}
-🧪 Produto: ${produtosTexto}
-📏 Ha aplicado: ${document.getElementById('hectares').value || "-"}
-✅ Situação: ${statusSelecionado}
-            `.trim();
+    function adicionarProdutoManual(nome) {
+      if (!nome.trim()) return;
+      const nomeLimpo = nome.trim();
+      if (!produtosSelecionados.includes(nomeLimpo)) {
+        produtosSelecionados.push(nomeLimpo);
+        if (!produtosBase.includes(nomeLimpo)) {
+          produtosBase.push(nomeLimpo);
+          produtosBase.sort();
         }
+        renderizarProdutosGrid();
+      }
+      manualInput.value = '';
+    }
 
-        function copiarTexto() {
-            const texto = montarTexto();
-            navigator.clipboard.writeText(texto).then(() => {
-                mostrarMensagem("✅ Texto copiado para a área de transferência!");
-            });
-        }
+    renderizarProdutosGrid();
 
-        function salvarTexto() {
-            const texto = montarTexto();
-            const blob = new Blob([texto], {type: 'text/plain'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `relatorio-${document.getElementById('data').value.replace(/\//g, '-')}.txt`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            mostrarMensagem("💾 Arquivo salvo com sucesso!");
-        }
+    addManualBtn.addEventListener('click', () => adicionarProdutoManual(manualInput.value));
+    manualInput.addEventListener('keypress', (e) => {
+      if(e.key === 'Enter') {
+        adicionarProdutoManual(manualInput.value);
+      }
+    });
 
-        function mostrarMensagem(texto) {
-            const msg = document.getElementById('mensagem');
-            msg.textContent = texto;
-            msg.classList.remove('hidden');
-            setTimeout(() => msg.classList.add('hidden'), 3000);
+    // Toggle Calculadora
+    calcToggleBtn.addEventListener('click', () => {
+      calculadoraCard.classList.toggle('show');
+      if (calculadoraCard.classList.contains('show')) {
+        calcToggleText.textContent = '🧮 Esconder Calculadora';
+      } else {
+        calcToggleText.textContent = '🧮 Mostrar Calculadora';
+      }
+    });
+
+    // ---------- CALCULADORA ----------
+    const botoesCalc = [
+      '7', '8', '9', '/',
+      '4', '5', '6', '*',
+      '1', '2', '3', '-',
+      '0', '.', 'C', '+',
+      '=', '⌫'
+    ];
+
+    function criarBotoesCalculadora() {
+      calcButtons.innerHTML = '';
+      botoesCalc.forEach(btn => {
+        const button = document.createElement('button');
+        button.className = 'calc-btn';
+        
+        if (['/', '*', '-', '+'].includes(btn)) {
+          button.classList.add('operator');
+        } else if (btn === '=') {
+          button.classList.add('equals');
+        } else if (btn === 'C') {
+          button.classList.add('clear');
         }
-    </script>
+        
+        button.textContent = btn === '*' ? '×' : btn === '/' ? '÷' : btn;
+        button.dataset.value = btn;
+        
+        button.addEventListener('click', () => handleCalculatorInput(btn));
+        calcButtons.appendChild(button);
+      });
+    }
+
+    function handleCalculatorInput(val) {
+      if (val === 'C') {
+        displayValue = '0';
+        firstOperand = null;
+        operator = null;
+        waitingForSecondOperand = false;
+        updateDisplay();
+        return;
+      }
+      
+      if (val === '⌫') {
+        if (displayValue.length > 1) {
+          displayValue = displayValue.slice(0, -1);
+        } else {
+          displayValue = '0';
+        }
+        updateDisplay();
+        return;
+      }
+      
+      if (val === '.') {
+        if (!displayValue.includes('.')) {
+          displayValue += '.';
+        }
+        updateDisplay();
+        return;
+      }
+      
+      if (['+', '-', '*', '/'].includes(val)) {
+        handleOperator(val);
+        return;
+      }
+      
+      if (val === '=') {
+        handleEquals();
+        return;
+      }
+      
+      handleNumber(val);
+    }
+
+    function handleNumber(num) {
+      if (waitingForSecondOperand) {
+        displayValue = num;
+        waitingForSecondOperand = false;
+      } else {
+        displayValue = displayValue === '0' ? num : displayValue + num;
+      }
+      updateDisplay();
+    }
+
+    function handleOperator(nextOperator) {
+      const inputValue = parseFloat(displayValue);
+      
+      if (operator && waitingForSecondOperand) {
+        operator = nextOperator;
+        return;
+      }
+      
+      if (firstOperand === null) {
+        firstOperand = inputValue;
+      } else if (operator) {
+        const result = calculate(firstOperand, inputValue, operator);
+        displayValue = String(result);
+        firstOperand = result;
+      }
+      
+      waitingForSecondOperand = true;
+      operator = nextOperator;
+      updateDisplay();
+    }
+
+    function handleEquals() {
+      const inputValue = parseFloat(displayValue);
+      
+      if (operator && !waitingForSecondOperand) {
+        const result = calculate(firstOperand, inputValue, operator);
+        displayValue = String(result);
+        firstOperand = null;
+        operator = null;
+        waitingForSecondOperand = false;
+        updateDisplay();
+      }
+    }
+
+    function calculate(first, second, op) {
+      switch(op) {
+        case '+': return first + second;
+        case '-': return first - second;
+        case '*': return first * second;
+        case '/': return second !== 0 ? first / second : 'Erro';
+        default: return second;
+      }
+    }
+
+    function updateDisplay() {
+      let displayText = displayValue;
+      if (operator) {
+        displayText = firstOperand + ' ' + operator + ' ' + (waitingForSecondOperand ? '' : displayValue);
+      }
+      displayText = displayText.replace(/\*/g, '×').replace(/\//g, '÷');
+      calcDisplay.textContent = displayText;
+    }
+
+    function usarResultado() {
+      let valorParaUsar = parseFloat(displayValue);
+      
+      if (!isNaN(valorParaUsar)) {
+        areaInput.value = valorParaUsar;
+        atualizarAreaResultado();
+      }
+    }
+
+    criarBotoesCalculadora();
+    updateDisplay();
+
+    // Área
+    function atualizarAreaResultado() {
+      let val = parseFloat(areaInput.value);
+      if (isNaN(val)) val = 0;
+      areaResultado.textContent = val.toFixed(2) + ' ha';
+    }
+    
+    areaInput.addEventListener('input', atualizarAreaResultado);
+    atualizarAreaResultado();
+    
+    usarResultadoBtn.addEventListener('click', usarResultado);
+
+    // Reset
+    function resetForm() {
+      pistaSelect.value = '';
+      pilotoSelect.value = '';
+      gestorSelect.value = '';
+      motoristaSelect.value = '';
+      secaoInput.value = '';
+      produtosSelecionados = [];
+      renderizarProdutosGrid();
+      manualInput.value = '';
+      areaInput.value = '0';
+      atualizarAreaResultado();
+      document.querySelectorAll('input[name="statusArea"]').forEach(r => r.checked = false);
+      obsText.value = '';
+      
+      displayValue = '0';
+      firstOperand = null;
+      operator = null;
+      waitingForSecondOperand = false;
+      updateDisplay();
+    }
+    
+    resetBtn.addEventListener('click', resetForm);
+
+    // Gerar texto
+    function gerarTextoRelatorio() {
+      const saudacao = saudacaoEl.textContent;
+      const data = dataEl.textContent;
+      const pista = pistaSelect.value || '(não selecionado)';
+      const piloto = pilotoSelect.value || '(não selecionado)';
+      const gestor = gestorSelect.value || '(não selecionado)';
+      const motorista = motoristaSelect.value || '(não selecionado)';
+      const secao = secaoInput.value || '(não informado)';
+      const produtos = produtosSelecionados.length ? produtosSelecionados.join(', ') : '(nenhum)';
+      const area = areaResultado.textContent;
+      const statusRadio = document.querySelector('input[name="statusArea"]:checked');
+      const status = statusRadio ? (statusRadio.value === 'finalizada' ? 'Finalizada' : 'Não finalizada') : '(não informado)';
+      const obs = obsText.value || '';
+
+      return `*${saudacao}*
+*${data}*
+*Pista:* ${pista}
+*Piloto:* ${piloto}
+*Gestor Responsável:* ${gestor}
+*Motorista:* ${motorista}
+*Seção:* ${secao}
+*Produto(s):* ${produtos}
+*QTD DE ÁREA APLICADA:* ${area}
+*Áreas:* ${status}
+*Obs:* ${obs}`;
+    }
+
+    // Botão Copiar
+    copiarBtn.addEventListener('click', async () => {
+      const texto = gerarTextoRelatorio();
+      try {
+        await navigator.clipboard.writeText(texto);
+      } catch {
+        // Falha silenciosa
+      }
+    });
+
+    // Botão Grupo WhatsApp
+    btnGrupoNormal.addEventListener('click', () => {
+      const texto = gerarTextoRelatorio();
+      navigator.clipboard.writeText(texto).then(() => {
+        window.open(linkGrupoNormal, '_blank');
+      }).catch(() => {
+        window.open(linkGrupoNormal, '_blank');
+      });
+    });
+
+    // Botão Compartilhar
+    btnCompartilhar.addEventListener('click', async () => {
+      const texto = gerarTextoRelatorio();
+      
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            text: texto
+          });
+        } catch (err) {
+          // Usuário cancelou
+        }
+      } else {
+        // Fallback: copiar
+        try {
+          await navigator.clipboard.writeText(texto);
+          alert('Texto copiado! Compartilhamento não suportado.');
+        } catch {
+          alert('Não foi possível compartilhar.');
+        }
+      }
+    });
+
+  })();
+</script>
 </body>
 </html>
